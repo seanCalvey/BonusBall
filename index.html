@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://unpkg.com/htmx.org@1.9.7" integrity="sha384-EAzY246d6BpbWR7sQ8+WEm40J8c3dHFsqC58IgPlh4kMbRRI6P6WA+LA/qGAyAu8" crossorigin="anonymous"></script>
+    <style>
+        a{
+            color: black;
+            text-decoration: none;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: auto auto auto auto auto auto auto auto auto auto auto;
+            gap: 10px;
+            /*background-color: cornsilk;*/
+            padding: 10px;
+            counter-reset: css-counter 0;
+        }
+        .grid-container > div {
+            border: 1px solid black;
+            border-radius: 50%;
+            text-align: center;
+            font-size: 30px;
+            aspect-ratio: 1;
+        }
+        .white{
+            background-color: #ffffff;
+        }
+        .blue{
+            background-color: cornflowerblue;
+        }
+        .pink{
+            background-color: deeppink;
+        }
+        .green{
+            background-color: limegreen;
+        }
+        .yellow{
+            background-color: yellow;
+        }
+        .purple{
+            background-color: darkmagenta;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>Bonus Ball</h1>
+    </div>
+    <div>
+        <form id="text-field-form" hx-post="/save-data" >
+            <label for="text-field"></label>
+            <input type="text" name="data" id="text-field">
+            <input type="hidden" name="number" id="number-field">
+            <button type="submit">Submit</button>
+        </form>
+        <div id="text-field-container" style="display: none;"></div>
+    </div>
+
+    <div class="grid-container">
+    </div>
+</body>
+<script>
+    let selectedBalls = [];
+    const numberOfBalls = 47;
+    const colouredBalls = 8;
+    const container = document.querySelector(".grid-container");
+    const numberField = document.querySelector("#number-field")
+    const colors = ["white", "blue", "pink", "green", "yellow", "purple"];
+    
+    // Create the balls
+    for (let i = 0; i < numberOfBalls; i++){
+        const numberDiv = document.createElement("div");
+        numberDiv.innerHTML = `${i + 1}`;
+        numberDiv.id = `${i + 1}`;
+        const colorIndex = Math.floor(i / colouredBalls);
+        numberDiv.className = colors[colorIndex];
+        container.append(numberDiv);
+        numberDiv.addEventListener("click", saveBallNumber);
+    }
+
+   function saveBallNumber() {
+       if (!selectedBalls.includes(this.id)) {
+           this.style.backgroundColor = "red";
+           selectedBalls.push(this.id);
+           numberField.value = selectedBalls;
+           console.log(selectedBalls);
+       } else {
+           this.removeAttribute('style');
+           selectedBalls = selectedBalls.filter(ball => ball !== this.id)
+       }
+   }
+</script>
+</html>
